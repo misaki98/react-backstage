@@ -3,11 +3,13 @@ import {
     Form,
     Icon,
     Input,
-    Button
+    Button,
+    message
 } from 'antd'
 
 import './login.less'
 import logo from './images/logo.png'
+import { reqLogin } from '../../api'
 // 登录的路由组件
 class Login extends React.Component {
     constructor(props) {
@@ -18,23 +20,29 @@ class Login extends React.Component {
     handleSubmit = (e) => {
         e.preventDefault()
         // 对所有表单字段进行校验
-        this.props.form.validateFields((err,values)=>{
+        this.props.form.validateFields(async (err, values) => {
             // 校验成功
-            if(!err){
-                console.log('Received values of form:',values)
-            }else{
+            if (!err) {
+                const { username, password } = values
+                const result = await reqLogin(username, password)
+                if(result.status === 0){
+                    message.success('登录成功')
+                    this.props.history.replace('/')
+                }else{
+                    message.error(result.msg)
+                }
+            } else {
                 console.log('校验失败')
             }
         })
 
-        const form = this.props.form
-        const value = form.getFieldsValue()
     }
 
     /**
      * 对密码进行自定义验证
      */
     validatePwd = (rule, value, callback) => {
+        console.log(rule)
         if (!value) {
             callback('密码必须输入')
         } else if (value.length <= 4) {
