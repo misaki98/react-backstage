@@ -1,4 +1,5 @@
 import React from 'react'
+import {Redirect} from 'react-router-dom'
 import {
     Form,
     Icon,
@@ -10,6 +11,9 @@ import {
 import './login.less'
 import logo from './images/logo.png'
 import { reqLogin } from '../../api'
+import memoryUtils from '../../utils/memoryUtils'
+import storageUtils from '../../utils/storageUtils'
+
 // 登录的路由组件
 class Login extends React.Component {
     constructor(props) {
@@ -28,6 +32,8 @@ class Login extends React.Component {
                 if(result.status === 0){
                     message.success('登录成功')
                     this.props.history.replace('/')
+                    memoryUtils.user = result.data
+                    storageUtils.saveUser(result.data)
                 }else{
                     message.error(result.msg)
                 }
@@ -59,6 +65,11 @@ class Login extends React.Component {
     }
 
     render() {
+        // 如果用户已经登录，自动跳转到首页
+        if(memoryUtils.user && memoryUtils.user._id){
+           return  <Redirect to='/' />
+        }
+
         const form = this.props.form
         const { getFieldDecorator } = form
 
