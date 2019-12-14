@@ -1,6 +1,7 @@
 import React from 'react'
 import './index.less'
 
+
 export default class Header extends React.Component {
     constructor(props) {
         super(props)
@@ -15,3 +16,4 @@ export default class Header extends React.Component {
         )
     }
 }
+
