@@ -25,7 +25,9 @@ const { Footer, Sider, Content } = Layout
 export default class Admin extends React.Component {
     constructor(props) {
         super(props)
-        this.state = {}
+        this.state = {
+           
+        }
     }
 
     render() {
@@ -40,7 +42,7 @@ export default class Admin extends React.Component {
                 </Sider>
                 <Layout>
                     <HeaderNav>Header</HeaderNav>
-                    <Content style={{ backgroundColor: '#fff' }}>
+                    <Content style={{ margin: 20, backgroundColor: '#fff' }}>
                         <Switch>
                             <Route path='/home' component={Home} />
                             <Route path='/category' component={Category} />
