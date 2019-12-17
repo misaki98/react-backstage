@@ -31,9 +31,9 @@ class Login extends React.Component {
                 const result = await reqLogin(username, password)
                 if(result.status === 0){
                     message.success('登录成功')
-                    this.props.history.replace('/')
                     memoryUtils.user = result.data
                     storageUtils.saveUser(result.data)
+                    this.props.history.replace('/')
                 }else{
                     message.error(result.msg)
                 }
