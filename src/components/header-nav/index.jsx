@@ -55,7 +55,7 @@ class Header extends React.Component {
                 memoryUtils.user = {}
                 this.props.history.replace('/login')
             }
-        });
+        })
     }
     componentDidMount() {
         this.getTime() //获取当前时间
