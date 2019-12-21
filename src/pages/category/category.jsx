@@ -1,7 +1,9 @@
 import React from 'react'
 import { Card, Table, Button, Icon, message, Modal } from 'antd'
 import LinkButton from '../../components/link-button'
-import { reqCategorys } from '../../api'
+import { reqCategorys, reqAddCategory, reqUpdateCategory } from '../../api'
+import AddForm from './add-form'
+import UpdateForm from './update-form'
 
 /**
  * 商品分类路由
@@ -30,7 +32,7 @@ export default class Category extends React.Component {
                 width: 300,
                 render: (categorys) => ( //指定返回需要指定显示的界面标签
                     <span>
-                        <LinkButton onClick={() => { this.setState({ showStatus: 2 }) }}>修改分类</LinkButton>
+                        <LinkButton onClick={() => { this.showUpdate(categorys) }}>修改分类</LinkButton>
                         {
                             this.state.parentId === '0' ? <LinkButton onClick={() => { this.showSubCategorys(categorys) }}>查看子分类</LinkButton> : null
                         }
@@ -79,14 +81,35 @@ export default class Category extends React.Component {
         })
     }
     handleCancel = () => {
+        // 清除输入数据
+        this.form.resetFields()
         this.setState({
             showStatus: 0
         })
     }
+    showUpdate = (categorys) => {
+        this.category = categorys
+        this.setState({ showStatus: 2 })
+    }
     addCate = () => {
 
     }
-    updateCate = () => {
+    updateCate = async () => {
+        // 1.隐藏确认框
+        this.setState({
+            showStatus: 0
+        })
+        const categoryId = this.category._id
+        const categoryName = this.form.getFieldValue('categoryName')
+        const result = await reqUpdateCategory({ categoryName, categoryId })
+        // 清除输入数据
+        this.form.resetFields()
+        if (result.status === 0) {
+            // 3.重新显示列表
+            this.getCategorys()
+        } else {
+
+        }
 
     }
     componentDidMount() {
@@ -94,7 +117,7 @@ export default class Category extends React.Component {
     }
     render() {
         const { categorys, loadingStatus, subCategorys, parentId, parentName, showStatus } = this.state
-
+        this.category = this.category || {}
         const title = parentId === '0' ? '一级分类列表' : (
             <span>
                 <LinkButton onClick={this.showCategorys}>一级分类列表</LinkButton>
@@ -103,9 +126,6 @@ export default class Category extends React.Component {
             </span>
         )
         const extra = (<Button type="primary" onClick={() => { this.setState({ showStatus: 1 }) }}><Icon type="plus" />添加</Button>)
-
-
-
 
 
         return (
@@ -124,7 +144,7 @@ export default class Category extends React.Component {
                     onOk={this.addCate}
                     onCancel={this.handleCancel}
                 >
-                    <p>add.</p>
+                    <AddForm />
                 </Modal>
                 <Modal
                     title="更新分类"
@@ -132,7 +152,10 @@ export default class Category extends React.Component {
                     onOk={this.updateCate}
                     onCancel={this.handleCancel}
                 >
-                    <p>update.</p>
+                    <UpdateForm
+                        categoryName={this.category.name}
+                        setForm={(form) => { this.form = form }}
+                    />
                 </Modal>
             </Card>
         )
