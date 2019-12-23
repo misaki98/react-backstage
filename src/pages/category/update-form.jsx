@@ -31,7 +31,10 @@ class UpdateForm extends React.Component {
                 <Item>
                     {
                         getFieldDecorator('categoryName', {
-                            initialValue: categoryName
+                            initialValue: categoryName,
+                            rules: [
+                                { required: true, message: '分类名称必须输入' }
+                            ]
                         })(
                             <Input placeholder="请输入分类名称" />
                         )
