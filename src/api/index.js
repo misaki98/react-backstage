@@ -20,8 +20,14 @@ export const reqCategorys = (parentId) => ajax(BASE + '/manage/category/list', {
 export const reqAddCategory = (categoryName, parentId) => ajax(BASE + '/manage/category/add', { categoryName, parentId }, 'POST')
 // 更新分类名称
 export const reqUpdateCategory = ({ categoryName, categoryId }) => ajax(BASE + '/manage/category/update', { categoryName, categoryId }, 'POST')
-
-
+// 获取商品列表
+export const reqProducts = (pageNum, pageSize) => ajax(BASE + '/manage/product/list', { pageNum, pageSize })
+// 搜索商品分页列表,根据搜索类型来进行判断
+export const reqSearchProducts = ({ pageNum, pageSize, searchName, searchType }) => ajax(BASE + '/manage/product/search', {
+    pageNum,
+    pageSize,
+    [searchType]: searchName
+})
 
 
 /**
