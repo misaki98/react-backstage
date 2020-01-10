@@ -5,11 +5,12 @@ import {
     Input,
     Button,
     Icon,
-    Table
+    Table,
+    message
 } from 'antd'
 
 import LinkButton from '../../components/link-button'
-import { reqProducts, reqSearchProducts } from '../../api'
+import { reqProducts, reqSearchProducts, reqCategoryStatus } from '../../api'
 import { PAGE_SIZE } from '../../utils/constants'
 const Option = Select.Option
 /**
@@ -47,12 +48,18 @@ export default class ProductHome extends React.Component {
             {
                 width: 100,
                 title: '状态',
-                dataIndex: 'status',
-                render: (status) => {
+                render: (product) => {
+                    const { _id, status } = product
+                    // console.log(_id, status)
                     return (
                         <span>
-                            <Button type='primary'>下架</Button>
-                            <span>在售</span>
+                            <Button
+                                type='primary'
+                                onClick={() => { this.updateStatus(_id, status === 1 ? 2 : 1) }}
+                            >
+                                {status === 1 ? '下架' : '上架'}
+                            </Button>
+                            <span>{status === 1 ? '在售' : '已下架'}</span>
                         </span>
 
 
@@ -65,7 +72,8 @@ export default class ProductHome extends React.Component {
                 render: (product) => {
                     return (
                         <span>
-                            <LinkButton>详情</LinkButton>
+                            {/* 将product对象作为state传递给目标路由组件 */}
+                            <LinkButton onClick={() => this.props.history.push('/product/detail', product)}>详情</LinkButton>
                             <LinkButton>修改</LinkButton>
                         </span>
                     )
@@ -73,10 +81,18 @@ export default class ProductHome extends React.Component {
             },
         ];
     }
+    updateStatus = async (categoryId, status) => {
+        const result = await reqCategoryStatus(categoryId, status)
+        if (result.status === 0) {
+            message.success('更新商品成功')
+            this.getProducts(this.pageNum)
+        }
+    }
     /**
      * 定义一个获取指定页码的列表数据
      */
     getProducts = async (pageNum) => {
+        this.pageNum = pageNum //保存当前的页码
         this.setState({ loading: true })
         const { searchName, searchType } = this.state
         // 如果搜索关键字有值，说明要进行搜索分页
