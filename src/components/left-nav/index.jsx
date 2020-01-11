@@ -14,7 +14,7 @@ class LeftNav extends React.Component {
     constructor(props) {
         super(props)
         this.state = {}
-    } 
+    }
 
     getMenuNodes = (menuList) => {
         // 根据传入的menu数据数组生产对应的标签数组
@@ -64,9 +64,11 @@ class LeftNav extends React.Component {
     // }
     render() {
         // 得到当前请求的路由路径
-        const path = this.props.location.pathname
+        let path = this.props.location.pathname
         const target = this.targetNode
-
+        if (path.indexOf('/product') === 0) {
+            path ='/product'
+        }
         return (
             <div className="left-nav">
                 <Link className="left-nav-header" to='/'>
