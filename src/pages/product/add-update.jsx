@@ -4,11 +4,11 @@ import {
     Form,
     Input,
     Cascader,
-    Upload,
     Button,
     Icon
 } from 'antd'
 
+import PicturesWall from './pictures-wall'
 import LinkButton from '../../components/link-button'
 import { reqCategorys } from '../../api'
 
@@ -24,6 +24,8 @@ class ProductAddUpdate extends React.Component {
         this.state = {
             options: []
         }
+        // 创建用来保存ref标识的标签对象的容器
+        this.pw = React.createRef()
     }
     // 获取分类列表数据，并显示
     // async函数返回的是一个promise对象，其值由async函数的结果来决定
@@ -31,7 +33,7 @@ class ProductAddUpdate extends React.Component {
         const result = await reqCategorys(parentId)
         if (result.status === 0) {
             const categorys = result.data
-            if (parentId == 0) {
+            if (parentId === '0') {
                 // 如果是一级列表，就直接初始化
                 this.initOptions(categorys)
             } else {
@@ -50,7 +52,7 @@ class ProductAddUpdate extends React.Component {
         }))
         // 如果是一个二级分类商品的更新，就需要提前获取数据
         const { isUpdate, product } = this
-        const { pCategoryId, categoryId } = product
+        const { pCategoryId } = product
         if (isUpdate && pCategoryId !== '0') {
             // 获取对应的二级分类列表
             const subCategory = await this.getCategorys(pCategoryId)
@@ -83,6 +85,8 @@ class ProductAddUpdate extends React.Component {
         // 进行提交的表单验证，如果通过了才能发请求
         this.props.form.validateFields((error, values) => {
             if (!error) {
+                const imgs = this.pw.current.getImgs()
+                console.log(imgs)
                 // 发请求
                 alert('发送请求')
             }
@@ -120,11 +124,11 @@ class ProductAddUpdate extends React.Component {
         this.product = product || {}
     }
     componentDidMount() {
-        this.getCategorys(0)
+        this.getCategorys('0')
     }
     render() {
         const { product } = this
-        const { pCategoryId, categoryId } = product
+        const { pCategoryId, categoryId, imgs } = product
         // 用来接收级联分类Id的数组
         const categoryIds = []
         if (this.isUpdate) {
@@ -202,7 +206,8 @@ class ProductAddUpdate extends React.Component {
 
                     </Item>
                     <Item label='商品图片'>
-                        <div>商品图片</div>
+                        {/* 使用ref来获取子组件对象，从而通过调用子组件对象的方法来获取数据 */}
+                        <PicturesWall ref={this.pw} imgs={imgs} />
                     </Item>
                     <Item label='商品详情'>
                         <div>商品详情</div>
