@@ -34,6 +34,10 @@ export const reqSearchProducts = ({ pageNum, pageSize, searchName, searchType })
 })
 // 删除图片
 export const reqDeleteImg = (name) => ajax(BASE + '/manage/img/delete', { name }, 'POST')
+// 添加或更新商品(将两个函数合并)
+export const reqAddOrUpdateProduct = (product) => ajax(BASE + '/manage/product/' + (product._id ? 'update' : 'add'), product, 'POST')
+//更新商品
+//export const reqUpdateProduct = (product) => ajax(BASE+'/manage/product/update',product, 'POST')
 
 
 /**

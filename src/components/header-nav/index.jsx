@@ -26,7 +26,7 @@ class Header extends React.Component {
         const pathname = this.props.location.pathname
         let title
         menu.forEach((item) => {
-            if (item.key === pathname) {
+            if (pathname.indexOf(item.key) === 0) {
                 title = item.title
             } else if (item.children) {
                 title = this.getTitle(item.children) || title
@@ -61,7 +61,7 @@ class Header extends React.Component {
         this.getTime() //获取当前时间
         this.getWeather()
     }
-    componentWillUnmount(){
+    componentWillUnmount() {
         /**
          * 组件卸载之前使用
          */

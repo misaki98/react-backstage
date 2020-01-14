@@ -5,12 +5,14 @@ import {
     Input,
     Cascader,
     Button,
-    Icon
+    Icon,
+    message
 } from 'antd'
 
 import PicturesWall from './pictures-wall'
+import RichTextEditor from './rich-text-editor'
 import LinkButton from '../../components/link-button'
-import { reqCategorys } from '../../api'
+import { reqCategorys, reqAddOrUpdateProduct } from '../../api'
 
 const { Item } = Form
 const { TextArea } = Input
@@ -26,6 +28,7 @@ class ProductAddUpdate extends React.Component {
         }
         // 创建用来保存ref标识的标签对象的容器
         this.pw = React.createRef()
+        this.editor = React.createRef()
     }
     // 获取分类列表数据，并显示
     // async函数返回的是一个promise对象，其值由async函数的结果来决定
@@ -83,12 +86,33 @@ class ProductAddUpdate extends React.Component {
     }
     submit = () => {
         // 进行提交的表单验证，如果通过了才能发请求
-        this.props.form.validateFields((error, values) => {
+        this.props.form.validateFields(async (error, values) => {
             if (!error) {
+                // 1. 收集数据，并封装成product对象
+                const { name, desc, price, categoryIds } = values
+                let categoryId, pCategoryId
+                if (categoryIds.length === 1) {
+                    pCategoryId = '0'
+                    categoryId = categoryIds[0]
+                } else {
+                    pCategoryId = categoryIds[0]
+                    categoryId = categoryIds[1]
+                }
                 const imgs = this.pw.current.getImgs()
-                console.log(imgs)
-                // 发请求
-                alert('发送请求')
+                const detail = this.editor.current.getDetail()
+                const product = { name, desc, price, imgs, detail, pCategoryId, categoryId }
+                if (this.isUpdate) {
+                    product._id = this.product._id
+                }
+                // 2. 调用接口请求函数添加或更新
+                const result = await reqAddOrUpdateProduct(product)
+                // 3. 根据结果提示相应信息
+                if (result.status === 0) {
+                    message.success(`${this.isUpdate ? '更新' : '添加'}商品成功`)
+                    this.props.history.goBack()
+                } else {
+                    message.error(`${this.isUpdate ? '更新' : '添加'}商品失败`)
+                }
             }
         })
     }
@@ -128,7 +152,7 @@ class ProductAddUpdate extends React.Component {
     }
     render() {
         const { product } = this
-        const { pCategoryId, categoryId, imgs } = product
+        const { pCategoryId, categoryId, imgs, detail } = product
         // 用来接收级联分类Id的数组
         const categoryIds = []
         if (this.isUpdate) {
@@ -209,8 +233,8 @@ class ProductAddUpdate extends React.Component {
                         {/* 使用ref来获取子组件对象，从而通过调用子组件对象的方法来获取数据 */}
                         <PicturesWall ref={this.pw} imgs={imgs} />
                     </Item>
-                    <Item label='商品详情'>
-                        <div>商品详情</div>
+                    <Item label='商品详情' labelCol={{ span: 3 }} wrapperCol={{ span: 20 }} >
+                        <RichTextEditor ref={this.editor} detail={detail} />
                     </Item>
                     <Item>
                         <Button type='primary' onClick={this.submit}>{this.isUpdate ? '更新' : '添加'}</Button>
