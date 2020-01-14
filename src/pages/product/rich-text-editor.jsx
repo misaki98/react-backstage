@@ -82,9 +82,5 @@ export default class RichTextEditor extends Component {
             />
 
         )
-        {/* <textarea
-          disabled
-          value={draftToHtml(convertToRaw(editorState.getCurrentContent()))}
-        /> */}
     }
 }
