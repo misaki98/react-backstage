@@ -38,7 +38,8 @@ export const reqDeleteImg = (name) => ajax(BASE + '/manage/img/delete', { name }
 export const reqAddOrUpdateProduct = (product) => ajax(BASE + '/manage/product/' + (product._id ? 'update' : 'add'), product, 'POST')
 //更新商品
 //export const reqUpdateProduct = (product) => ajax(BASE+'/manage/product/update',product, 'POST')
-
+// 获取所有角色
+export const reqRoles = () => ajax(BASE+'/manage/role/list')
 
 /**
  * jsonp请求的接口请求函数

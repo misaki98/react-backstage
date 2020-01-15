@@ -32,7 +32,7 @@ export default class RichTextEditor extends Component {
         detail: PropTypes.string
     }
 
-    onEditorStateChange: Function = (editorState) => {
+    onEditorStateChange = (editorState) => {
         this.setState({
             editorState,
         })
