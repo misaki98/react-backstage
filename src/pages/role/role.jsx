@@ -7,10 +7,11 @@ import {
     message
 } from 'antd'
 import { PAGE_SIZE } from '../../utils/constants'
-import { reqRoles, reqAddRole } from '../../api'
+import { reqRoles, reqAddRole, reqUpdateRole } from '../../api'
 import AddForm from './add-form'
 import UpdateFrom from './update-form'
-import {formateDate} from '../../utils/dateUtils'
+import { formateDate } from '../../utils/dateUtils'
+import  user  from '../../utils/memoryUtils'
 
 export default class Role extends React.Component {
     constructor(props) {
@@ -21,6 +22,7 @@ export default class Role extends React.Component {
             isShowAdd: false, //是否显示添加界面
             isShowUpdate: false, //是否显示更新页面
         }
+        this.authForm = React.createRef()
     }
     initColumn = () => {
         this.columns = [
@@ -30,12 +32,12 @@ export default class Role extends React.Component {
             }, {
                 title: '创建时间',
                 dataIndex: 'create_time',
-                render:(time)=> formateDate(time)
+                render: (time) => formateDate(time)
 
             }, {
                 title: '授权时间',
                 dataIndex: 'auth_time',
-                render:(time)=> formateDate(time)
+                render: formateDate
             }, {
                 title: '授权人',
                 dataIndex: 'auth_name'
@@ -92,7 +94,20 @@ export default class Role extends React.Component {
     /**
      * 更新角色
      */
-    updateRole = () => {
+    updateRole = async () => {
+        const {_id} = this.state.role
+        const menus = this.authForm.current.getMenus()
+        const auth_name = user.user.username
+        const result = await reqUpdateRole({_id,auth_name,menus})
+        this.setState({ isShowUpdate: false })
+        if(result.status===0){
+            const role = result.data
+            this.setState({ role })
+            message.success('设置权限成功')
+            this.getRoles()
+        }else{
+            message.error(result.msg)
+        }
 
     }
     render() {
@@ -131,7 +146,7 @@ export default class Role extends React.Component {
                     onCancel={() => { this.setState({ isShowUpdate: false }) }}
                 >
                     <UpdateFrom
-                        role={role}
+                        role={role} ref={this.authForm}
                     />
                 </Modal>
             </Card>

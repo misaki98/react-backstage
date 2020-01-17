@@ -42,6 +42,8 @@ export const reqAddOrUpdateProduct = (product) => ajax(BASE + '/manage/product/'
 export const reqRoles = () => ajax(BASE + '/manage/role/list')
 // 添加角色
 export const reqAddRole = (roleName) => ajax(BASE + '/manage/role/add', { roleName }, 'POST')
+// 设置角色权限
+export const reqUpdateRole = ({_id, menus, auth_name}) => ajax(BASE + '/manage/role/update', { _id, menus, auth_name }, 'POST')
 
 /**
  * jsonp请求的接口请求函数

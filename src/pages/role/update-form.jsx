@@ -7,26 +7,44 @@ import {
 import PropTypes from 'prop-types'
 import menuList from '../../config/menuConfig'
 
+
 const { TreeNode } = Tree
-const {Item} = Form
+const { Item } = Form
 
 const treeData = [
     {
         title: '平台权限',
         key: 'all',
-        children:[...menuList]
+        children: [...menuList]
     }
 ]
 
 export default class UpdateFrom extends React.Component {
-    state = {
-        // expandedKeys: ['all'],
-        checkedKeys: [],
-        selectedKeys: [],
+    constructor(props) {
+        super(props)
+        this.state = {
+            // expandedKeys: ['all'],
+            checkedKeys: this.props.role.menus,
+            selectedKeys: [],
+        }
     }
     static propTypes = {
         role: PropTypes.object.isRequired
     }
+    componentWillMount() {
+        this.treeNode = this.renderTreeNodes(treeData)
+        
+    }
+    componentWillReceiveProps(nextProps){
+        this.setState({
+            checkedKeys: nextProps.role.menus,
+        })
+    }
+    /**
+     * 为父组件提供最新menus
+     */
+    getMenus = () => this.state.checkedKeys
+
 
     onExpand = expandedKeys => {
         console.log('onExpand', expandedKeys);
@@ -34,18 +52,18 @@ export default class UpdateFrom extends React.Component {
         // or, you can remove all expanded children keys.
         this.setState({
             expandedKeys,
-        });
-    };
+        })
+    }
 
     onCheck = checkedKeys => {
-        console.log('onCheck', checkedKeys);
-        this.setState({ checkedKeys });
-    };
+        console.log('onCheck', checkedKeys)
+        this.setState({ checkedKeys })
+    }
 
     onSelect = (selectedKeys, info) => {
-        console.log('onSelect', info);
-        this.setState({ selectedKeys });
-    };
+        console.log('onSelect', info)
+        this.setState({ selectedKeys })
+    }
 
     renderTreeNodes = data =>
         data.map(item => {
@@ -77,7 +95,7 @@ export default class UpdateFrom extends React.Component {
                     onSelect={this.onSelect}
                     selectedKeys={this.state.selectedKeys}
                 >
-                    {this.renderTreeNodes(treeData)}
+                    {this.treeNode}
                 </Tree>
             </Form>
 
