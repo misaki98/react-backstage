@@ -19,7 +19,7 @@ const treeData = [
     }
 ]
 
-export default class UpdateFrom extends React.Component {
+export default class UpdateFrom extends React.PureComponent {
     constructor(props) {
         super(props)
         this.state = {

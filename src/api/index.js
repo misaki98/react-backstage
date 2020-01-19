@@ -11,8 +11,6 @@ const BASE = ''
 
 // 登录接口
 export const reqLogin = (username, password) => ajax(BASE + '/login', { username, password }, 'POST')
-// 添加用户接口
-export const reqAddUser = (user) => ajax(BASE + '/manage/user/add', user, 'POST')
 
 // 获取分类的列表
 export const reqCategorys = (parentId) => ajax(BASE + '/manage/category/list', { parentId })
@@ -43,7 +41,14 @@ export const reqRoles = () => ajax(BASE + '/manage/role/list')
 // 添加角色
 export const reqAddRole = (roleName) => ajax(BASE + '/manage/role/add', { roleName }, 'POST')
 // 设置角色权限
-export const reqUpdateRole = ({_id, menus, auth_name}) => ajax(BASE + '/manage/role/update', { _id, menus, auth_name }, 'POST')
+export const reqUpdateRole = ({ _id, menus, auth_name }) => ajax(BASE + '/manage/role/update', { _id, menus, auth_name }, 'POST')
+// 获取所有用户
+export const reqUsers = () => ajax(BASE + '/manage/user/list')
+// 删除用户
+export const reqDeleteUser = (userId) => ajax(BASE+'/manage/user/delete',{userId},'POST')
+// 更新或添加用户
+export const reqAddOrUpdateUser = (user) => ajax(BASE + '/manage/user/' + (user._id ? 'update' : 'add'), user, 'POST')
+
 
 /**
  * jsonp请求的接口请求函数

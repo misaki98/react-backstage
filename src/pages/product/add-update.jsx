@@ -139,6 +139,7 @@ class ProductAddUpdate extends React.Component {
         }
         this.setState({
             options: [...this.state.options],
+            // 必须要用这种写法来保证更新数组是改变了它的指针，在纯组件的情况下。针对对象或者数组内部的修改不会被捕获
         })
     }
     componentWillMount() {
