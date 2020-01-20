@@ -151,6 +151,7 @@ export default class ProductHome extends React.Component {
                     dataSource={products}
                     columns={this.columns}
                     pagination={{
+                        current:this.pageNum,
                         defaultPageSize: PAGE_SIZE,
                         total,
                         onChange: this.getProducts

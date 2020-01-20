@@ -11,7 +11,8 @@ import { reqRoles, reqAddRole, reqUpdateRole } from '../../api'
 import AddForm from './add-form'
 import UpdateFrom from './update-form'
 import { formateDate } from '../../utils/dateUtils'
-import  user  from '../../utils/memoryUtils'
+import user from '../../utils/memoryUtils'
+import storageUtils from '../../utils/storageUtils'
 
 export default class Role extends React.Component {
     constructor(props) {
@@ -95,17 +96,27 @@ export default class Role extends React.Component {
      * 更新角色
      */
     updateRole = async () => {
-        const {_id} = this.state.role
+        const { _id } = this.state.role
         const menus = this.authForm.current.getMenus()
         const auth_name = user.user.username
-        const result = await reqUpdateRole({_id,auth_name,menus})
+        const result = await reqUpdateRole({ _id, auth_name, menus })
         this.setState({ isShowUpdate: false })
-        if(result.status===0){
+        if (result.status === 0) {
             const role = result.data
             this.setState({ role })
-            message.success('设置权限成功')
+            
+            // 如果当前更新的是自己角色的权限，则强制退出
+            if (role._id === user.user.role_id) {
+                user.user = {}
+                storageUtils.removeUser()
+                this.props.history.replace('/login')
+                message.success('角色权限更变，请重新登录')
+            } else {
+
+            }
             this.getRoles()
-        }else{
+            message.success('设置权限成功')
+        } else {
             message.error(result.msg)
         }
 
@@ -126,7 +137,7 @@ export default class Role extends React.Component {
                     bordered
                     rowKey='_id'
                     pagination={{ defaultPageSize: PAGE_SIZE }}
-                    rowSelection={{ type: 'radio', selectedRowKeys: [role._id] }}
+                    rowSelection={{ type: 'radio', selectedRowKeys: [role._id],onSelect:(role)=>{this.setState({role})} }}
                     onRow={this.onRow}
                 />
                 <Modal
