@@ -27,8 +27,8 @@ class LeftNav extends React.Component {
          * */
         if (username === 'admin' || isPublic || menus.indexOf(key) !== -1) {
             return true
-        }else if(item.children){
-            return !!item.children.find(child=>menus.indexOf(child.key)!==-1)
+        } else if (item.children) {
+            return !!item.children.find(child => menus.indexOf(child.key) !== -1)
         } else {
             return false
         }
@@ -67,6 +67,7 @@ class LeftNav extends React.Component {
                     )
                 }
             }
+            return item.id
         })
     }
     componentWillMount() {

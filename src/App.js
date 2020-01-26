@@ -6,10 +6,6 @@ import Admin from './pages/admin/admin'
  * 根组件
  */
 export default class App extends Component {
-
-
-
-
     render() {
         return (
             // 最外层都是一个路由器
