@@ -16,7 +16,7 @@
     "react-dom": "^16.8.6",
     "react-draft-wysiwyg": "^1.14.4",
     "react-router-dom": "^5.1.2",
-    "react-scripts": "3.0.1",
+    "react-scripts": "5.0.1",
     "store": "^2.0.12"
   },
   "scripts": {
@@ -42,7 +42,7 @@
   },
   "devDependencies": {
     "webpack": "^4.29.6",
-    "webpack-cli": "^3.3.10"
+    "webpack-cli": "^3.3.12"
   },
   "proxy": "http://localhost:5000"
 }
